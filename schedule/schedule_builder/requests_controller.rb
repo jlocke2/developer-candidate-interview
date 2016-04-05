@@ -6,11 +6,10 @@ class RequestsController
 
   # A little Dependency Injection, so we can mix things up without having to modify this class
   # this relates to Open/Closed Principle in SOLID, I believe
-  def initialize(opts)
+  def initialize(opts = {})
     @parsers = opts[:parsers] || {csv: RequestsParserCsv.new}
     @conflict_tester = opts[:conflict_tester] || RequestModel.new
     @output = opts[:output] || RequestOutputConsole.new
-    @datastore = opts[:datastore] || DataStoreLocal.new
   end
 
   # Pseudo RESTful Route
@@ -18,11 +17,11 @@ class RequestsController
 
   def create(file)
     # A guard clause checking for matching file types
-    filetype = File.extname(input.to_s).delete('.').to_sym
+    filetype = File.extname(file.to_s).delete('.').to_sym
     return "Sorry! We can only handle the following file types: #{@parsers.keys.join}. Please try again!" unless @parsers.keys.include? filetype
 
-    requests = @parser[filetype].parse(file)
-
+    requests = @parsers[filetype].parse(file)
+    
     requests.each do |request|
       request = @conflict_tester.save(request)
       @output.display_message(request)

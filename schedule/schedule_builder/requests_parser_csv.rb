@@ -5,7 +5,7 @@ class RequestsParserCsv
   end
 
   def parse(file)
-    csv = CSV.new(file, :headers => true, :header_converters => :symbol, :converters => [:all, :blank_to_nil])
+    csv = CSV.new(open(file), :headers => true, :header_converters => :symbol, :converters => [:all, :blank_to_nil])
     csv.to_a.map {|row| row.to_hash }
   end
 

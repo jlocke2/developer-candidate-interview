@@ -1,5 +1,0 @@
-class RequestValidation
-
-  
-
-end
