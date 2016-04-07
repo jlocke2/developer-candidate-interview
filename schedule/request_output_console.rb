@@ -2,7 +2,7 @@ class RequestOutputConsole
   # this is essentially our "View" in MVC
 
   def display_message(request)
-    if request[:errors].empty?
+    if request.errors.messages.empty?
       print_success_message(request)
     else
       print_failure_message(request)
@@ -24,10 +24,8 @@ class RequestOutputConsole
   def print_failure_message(request)
     failure_message = <<-HEREDOC
 
-    Student Name: #{request[:name]}
-    Attempted Instructor: #{request[:with]}
-    Attempted Schedule: #{request[:start_time]} - #{request[:end_time]} on #{request[:start_date]}
-    Reason for Conflict: #{request[:errors].join(', ')}
+    Request ID: #{request.request_id}
+    Reason for Conflict: #{request.errors.messages[:base].join(', ')}
 
     HEREDOC
 
