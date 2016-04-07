@@ -1,14 +1,15 @@
 class Trainer < ActiveRecord::Base
-  has_many :appointments
-
-  has_many :availabilities
+  has_many :sessions
+  has_many :constraints
 
   before_save :add_base_name
+
+  validates :base_name, presence: true
 
   private
 
   def add_base_name
-    self.base_name = name.gsub(/[^a-z\s\_]/i, '').split.join(" ").downcase.gsub(/\s+/,"_") if name
+    self.base_name = name.convert_to_basename if name
   end
 
 

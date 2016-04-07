@@ -3,4 +3,4 @@ ruby '2.1.4'
 
 gem 'sqlite3'
 gem 'activerecord'
-gem 'runt'
+gem "interactor", "~> 3.0"
