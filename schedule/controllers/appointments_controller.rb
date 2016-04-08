@@ -27,7 +27,6 @@ class AppointmentsController
       if result.success?
         @output.print_success_message
       else
-        result.appointments.each {|apt| apt.destroy} if result.appointments.any?
         @output.print_failure_message(result.request_id, result.error_messages)
       end
       

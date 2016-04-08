@@ -8,7 +8,6 @@ class Constraint < ActiveRecord::Base
   validates :end_date, presence: true
   validates :end_time, presence: true
   validates :duration, presence: true
-  validates :trainer_id, presence: true, numericality: true
 
   attr_accessor :name
 end

@@ -1,5 +1,5 @@
 class RequestAppointment
   include Interactor::Organizer
 
-  organize EstablishSession, JoinSession
+  organize JoinAppointment
 end

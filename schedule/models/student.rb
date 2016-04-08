@@ -1,15 +1,11 @@
 class Student < ActiveRecord::Base
   has_many :appointments
-  has_many :sessions, through: :appointments
+  has_many :trainers, through: :appointments
 
-  before_save :add_base_name
+  before_validation(on: :create) do
+    self.base_name = name.convert_to_basename if name
+  end
 
   validates :name, presence: true
-
-  private
-
-  def add_base_name
-    self.base_name = self.name.convert_to_basename
-  end
 
 end

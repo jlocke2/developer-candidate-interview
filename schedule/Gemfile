@@ -4,3 +4,4 @@ ruby '2.1.4'
 gem 'sqlite3'
 gem 'activerecord'
 gem "interactor", "~> 3.0"
+gem 'ice_cube'

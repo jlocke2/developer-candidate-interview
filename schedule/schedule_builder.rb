@@ -9,8 +9,8 @@ require 'rubygems'
 require 'bundler/setup'
 
 # require your gems as usual
-require 'runt'
 require 'interactor'
+require 'ice_cube'
 
 # Connect to an in-memory sqlite3 database
 require 'sqlite3'
@@ -35,16 +35,13 @@ ActiveRecord::Schema.define do
 
   create_table :appointments, force: true do |t|
     t.integer :request_id
-    t.belongs_to :student, index: true
-    t.belongs_to :session, index: true
-  end
-
-  create_table :sessions, force: true do |t|
     t.string :training_type
-    t.date :date
+    t.date :start_date
+    t.date :end_date
+    t.string :frequency
     t.string :start_time
     t.string :end_time
-
+    t.belongs_to :student, index: true
     t.belongs_to :trainer, index: true
   end
 
@@ -65,7 +62,6 @@ end
 
 require_relative './models/appointment.rb'
 require_relative './models/constraint.rb'
-require_relative './models/session.rb'
 require_relative './models/student.rb'
 require_relative './models/trainer.rb'
 
@@ -75,8 +71,7 @@ require_relative './controllers/constraints_controller.rb'
 
 require_relative './views/request_output_console.rb'
 
-require_relative './interactors/establish_session.rb'
-require_relative './interactors/join_session.rb'
+require_relative './interactors/join_appointment.rb'
 require_relative './interactors/request_appointment.rb'
 
 require_relative './lib/extend_string.rb'
