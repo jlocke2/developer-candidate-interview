@@ -9,5 +9,8 @@ class Constraint < ActiveRecord::Base
   validates :end_time, presence: true
   validates :duration, presence: true
 
+  scope :group_lesson, -> {where(training_type: "Group Lesson")}
+  scope :private_lesson, -> {where(training_type: "Private Lesson")}
+
   attr_accessor :name
 end

@@ -5,3 +5,4 @@ gem 'sqlite3'
 gem 'activerecord'
 gem "interactor", "~> 3.0"
 gem 'ice_cube'
+gem 'rspec'

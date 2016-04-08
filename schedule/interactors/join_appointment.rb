@@ -4,7 +4,9 @@ class JoinAppointment
   before :create_error_array, :find_student, :find_trainer
 
   def call
-    appointment = context.student.appointments.build(start_date: context.start_date, end_date: context.end_date, start_time: context.start_time, end_time: context.end_time, training_type: context.training_type, trainer_id: context.trainer.id, request_id: context.request_id)
+    appointment = context.student.appointments.build(start_date: context.start_date, end_date: context.end_date, 
+                  start_time: context.start_time, end_time: context.end_time, training_type: context.training_type, 
+                  trainer_id: context.trainer.id, request_id: context.request_id)
 
     if appointment.save
       context.appointment = appointment

@@ -50,7 +50,7 @@ class Appointment < ActiveRecord::Base
 
   def not_too_long
     trainer = Trainer.find(trainer_id)
-    constraint = trainer.constraints.where(training_type: training_type).first
+    constraint = trainer.constraints.group_lesson.first
     if constraint && (Time.parse(end_time) - Time.parse(start_time)) > (constraint.duration.split.first.to_i * 3600)
       errors[:base] << "instructor not available"
     end
@@ -81,7 +81,8 @@ class Appointment < ActiveRecord::Base
   def session_capacity
     trainer = Trainer.find(trainer_id)
     appointments = trainer.appointments.date_overlap(start_date,end_date).time_exact(start_time,end_time)
-    if trainer.constraints.any? && appointments.count >= trainer.constraints.where(training_type: "Group Lesson").first.max_participants.to_i
+    constraint = trainer.constraints.group_lesson.first
+    if constraint && appointments.count >= constraint.max_participants.to_i
       errors[:base] << "instructor not available"
     end
   end

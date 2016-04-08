@@ -1,5 +1,5 @@
 class RequestOutputConsole
-  # this is essentially our "View" in MVC
+  # this is our "View" in MVC
 
   def print_success_message
     success_message = <<-HEREDOC

@@ -2,7 +2,25 @@
 
 Hey Jason!
 
-Start reading here
+Running the schedule app, should only require 3 steps...
+1) cd to schedule directory
+2) run 'bundle install'
+3) run 'ruby schedule_builder.rb'
+
+That should do it! I look forward to having the chance to chat through the different design decisions and choices I made.
+
+The tricky thing with coding challenges is figuring out exactly how complex and extensible a solution someone is looking
+for. I tried to keep in mind the various principles of Object Oriented programming (abstraction, encapsulation,
+polymorphism, and inheritance), SOLID, and TDD, yet it can be hard to convey all of this reasonably well in a small
+project like this. I would love the opportunity to discuss the various design decisions I made here that way we can 
+hopefully both learn together.
+
+Oh and I'm sure there is some refactoring that could be done, but I didn't want to spend too long perfecting every detail
+for the coding challenge. This should give you a good feel of my thought process and design implementations, while leaving
+some extra things for us to discuss on the call.
+
+Thanks again for this opportunity! Excited to see/hear what you think!
+Alan
 
 =end
 require 'rubygems'
@@ -11,6 +29,7 @@ require 'bundler/setup'
 # require your gems as usual
 require 'interactor'
 require 'ice_cube'
+require 'rspec'
 
 # Connect to an in-memory sqlite3 database
 require 'sqlite3'
