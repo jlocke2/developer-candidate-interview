@@ -1,8 +1,11 @@
 require 'rspec'
 require_relative '../tester'
+require 'active_support'
+require 'active_support/core_ext'
+
 
 RSpec.describe Tester do
-  [Tester::T1, Tester::T2].each do |clz|
+  [Tester::T1, Tester::T2, Tester::T3, Tester::T4].each do |clz|
     context 'words' do
       it 'should be a palindrome' do
         expect(clz.new.palindrome?('abcdefedcba')).to be_truthy
@@ -38,12 +41,49 @@ RSpec.describe Tester do
       end
 
       it 'should handle empty strings' do
+        expect(clz.new.palindrome?('      ')).to be_falsey
+      end
+
+      it 'should handle empty strings' do
         expect(clz.new.palindrome?('')).to be_falsey
       end
 
-      it 'should handle non-strings' do
+      it 'should handle non-strings (num)' do
         expect(clz.new.palindrome?(100)).to be_falsey
       end
+
+      it 'should handle non-strings (num)' do
+        expect(clz.new.palindrome?(1001)).to be_truthy
+      end
+
+      it 'should handle non-strings (array)' do
+        expect(clz.new.palindrome?([1,2,3,2,1])).to be_truthy
+      end
+
+      it 'should handle non-strings (hash)' do
+        expect(clz.new.palindrome?({smart: 1})).to be_falsey
+      end
+
+      it 'should handle accented characters' do
+        expect(clz.new.palindrome?("Ññ")).to be_truthy
+      end
+
+      it 'should handle unicode characters (chinese)' do
+        expect(clz.new.palindrome?("楚人楚")).to be_truthy
+      end
+
+      it 'should handle unicode characters (russian)' do
+        expect(clz.new.palindrome?("довод")).to be_truthy
+      end
+
+      it 'should work with 3 byte unicode chars' do
+        expect(clz.new.palindrome?("\u2764")).to be_truthy
+      end
+
+      it 'should work with 4 byte unicode chars' do
+        expect(clz.new.palindrome?("😁")).to be_truthy
+      end
+
     end
   end
 end
