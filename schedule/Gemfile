@@ -6,3 +6,7 @@ gem 'activerecord'
 gem "interactor", "~> 3.0"
 gem 'ice_cube'
 gem 'rspec'
+gem "database_cleaner"
+gem 'factory_girl'
+gem 'faker'
+gem 'shoulda-matchers'

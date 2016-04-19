@@ -7,5 +7,6 @@ class Student < ActiveRecord::Base
   end
 
   validates :name, presence: true
+  validates :base_name, presence: true
 
 end

@@ -17,6 +17,75 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+
+require 'factory_girl'
+config.include FactoryGirl::Syntax::Methods
+
+config.before(:suite) do
+  FactoryGirl.find_definitions
+end
+
+require 'faker'
+
+require 'active_record'
+require 'sqlite3'
+
+ActiveRecord::Base.establish_connection(
+  adapter: 'sqlite3',
+  database: ':memory:'
+)
+
+# Define a minimal database schema
+ActiveRecord::Schema.define do
+  create_table :students, force: true do |t|
+    t.string :name
+    t.string :base_name
+  end
+
+  create_table :trainers, force: true do |t|
+    t.string :name
+    t.string :base_name
+  end
+
+  create_table :appointments, force: true do |t|
+    t.integer :request_id
+    t.string :training_type
+    t.date :start_date
+    t.date :end_date
+    t.string :frequency
+    t.string :start_time
+    t.string :end_time
+    t.belongs_to :student, index: true
+    t.belongs_to :trainer, index: true
+  end
+
+  create_table :constraints, force: true do |t|
+    t.string :training_type
+    t.string :max_participants
+    t.date :start_date
+    t.string :start_time
+    t.date :end_date
+    t.string :end_time
+    t.string :duration
+
+    t.belongs_to :trainer, index: true
+  end
+
+  require 'database_cleaner'
+
+  # Configure DatabaseCleaner to reset data between tests
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
+
+end
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

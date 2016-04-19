@@ -7,6 +7,7 @@ class Trainer < ActiveRecord::Base
     self.base_name = name.convert_to_basename if name
   end
 
+  validates :name, presence: true
   validates :base_name, presence: true
 
 end

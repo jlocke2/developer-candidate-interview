@@ -1,5 +1,5 @@
 require 'rspec'
-require_relative '../lib/extend_string'
+require_relative '../../lib/extend_string'
 
 describe String do
 
