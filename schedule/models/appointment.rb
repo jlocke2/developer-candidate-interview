@@ -15,9 +15,8 @@ class Appointment < ActiveRecord::Base
 
   before_validation :set_trainer, :set_student
 
-  validate :trainer_exists
   validate :during_trainer_availability
-  validate :not_too_long, if: proc {|apt| apt.training_type == "Group Lesson"}
+  validate :proper_length
   validate :student_available
   validate :no_private_session_conflict_for_trainer, if: proc {|apt| apt.training_type == "Private Lesson"}
   validate :exact_match_for_group_session, if: proc {|apt| apt.training_type == "Group Lesson"}
@@ -48,12 +47,6 @@ class Appointment < ActiveRecord::Base
     @student = Student.find(student_id) if student_id
   end
 
-  def trainer_exists
-    unless @trainer
-      errors[:base] << "instructor not available"
-    end
-  end
-
   def during_trainer_availability
     constraint = @trainer && @trainer.constraints.where(training_type: training_type).first
     if constraint
@@ -64,11 +57,18 @@ class Appointment < ActiveRecord::Base
     end
   end
 
-  def not_too_long
+  def proper_length
     if @trainer
-      constraint = @trainer.constraints.group_lesson.first
-      if constraint && (Time.parse(end_time) - Time.parse(start_time)) > (constraint.duration.split.first.to_i * 3600)
-        errors[:base] << "instructor not available"
+      if training_type == "Group Lesson"
+        constraint = @trainer.constraints.group_lesson.first
+        if constraint && (Time.parse(end_time) - Time.parse(start_time)) != (constraint.duration.split.first.to_i * 3600)
+          errors[:base] << "instructor not available"
+        end
+      else
+        constraint = @trainer.constraints.private_lesson.first
+        if constraint && ((Time.parse(end_time) - Time.parse(start_time)) % (constraint.duration.split.first.to_i * 3600) != 0)
+          errors[:base] << "instructor not available"
+        end
       end
     end
   end

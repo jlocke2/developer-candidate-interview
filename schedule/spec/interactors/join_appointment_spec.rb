@@ -16,7 +16,7 @@ describe JoinAppointment do
         expect(context).to be_a_success
       end
 
-      it "provides the user" do
+      it "provides the appointment" do
         expect(context.appointment).to eq(appointment)
       end
 
@@ -31,6 +31,10 @@ describe JoinAppointment do
 
       it "fails" do
         expect(context).to be_a_failure
+      end
+
+      it "provides the appointment" do
+        expect(context.appointment).to eq(appointment)
       end
 
     end
