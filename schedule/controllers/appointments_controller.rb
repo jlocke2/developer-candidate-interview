@@ -27,7 +27,7 @@ class AppointmentsController
       if result.success?
         @output.print_success_message
       else
-        @output.print_failure_message(result.request_id, result.error_messages)
+        @output.print_failure_message(result.request_id, result.appointment.errors.messages)
       end
       
     end

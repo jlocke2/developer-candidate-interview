@@ -15,7 +15,7 @@ class RequestOutputConsole
     failure_message = <<-HEREDOC
 
     Request ID: #{request_id}
-    Reason for Conflict: #{errors.first[:base].uniq.join(', ')}
+    Reason for Conflict: #{errors[:base].uniq.join(', ')}
 
     HEREDOC
 

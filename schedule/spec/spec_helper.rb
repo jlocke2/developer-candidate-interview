@@ -18,6 +18,12 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
 
+require 'interactor'
+
+require 'shoulda-matchers'
+config.include(Shoulda::Matchers::ActiveModel, type: :model)
+config.include(Shoulda::Matchers::ActiveRecord, type: :model)
+
 require 'factory_girl'
 config.include FactoryGirl::Syntax::Methods
 

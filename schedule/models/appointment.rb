@@ -5,7 +5,7 @@ class Appointment < ActiveRecord::Base
   belongs_to :student
 
   ## here's our objective order
-  # 1. trainer exists? # taken care of in interactor
+  # 1. trainer exists? # :trainer_exists validation
   # 2. trainer constraint no conflict # :not_too_long validation
   # 3. student no schedule conflict # :student_available validation
   # 4. trainer no private conflict # :no_private_session_conflict_for_trainer validation
@@ -15,6 +15,7 @@ class Appointment < ActiveRecord::Base
 
   before_validation :set_trainer, :set_student
 
+  validate :trainer_exists
   validate :during_trainer_availability
   validate :not_too_long, if: proc {|apt| apt.training_type == "Group Lesson"}
   validate :student_available
@@ -47,8 +48,14 @@ class Appointment < ActiveRecord::Base
     @student = Student.find(student_id) if student_id
   end
 
+  def trainer_exists
+    unless @trainer
+      errors[:base] << "instructor not available"
+    end
+  end
+
   def during_trainer_availability
-    constraint = @trainer.constraints.where(training_type: training_type).first
+    constraint = @trainer && @trainer.constraints.where(training_type: training_type).first
     if constraint
       unless constraint.start_date <= start_date && constraint.end_date >= end_date &&
              constraint.start_time <= start_time && constraint.end_time >= end_time
@@ -58,36 +65,42 @@ class Appointment < ActiveRecord::Base
   end
 
   def not_too_long
-    constraint = @trainer.constraints.group_lesson.first
-    if constraint && (Time.parse(end_time) - Time.parse(start_time)) > (constraint.duration.split.first.to_i * 3600)
-      errors[:base] << "instructor not available"
+    if @trainer
+      constraint = @trainer.constraints.group_lesson.first
+      if constraint && (Time.parse(end_time) - Time.parse(start_time)) > (constraint.duration.split.first.to_i * 3600)
+        errors[:base] << "instructor not available"
+      end
     end
   end
 
   def student_available
-    if student.appointments.date_overlap(start_date,end_date).time_exact_or_overlap(start_time,end_time).any?
+    if @student && @student.appointments.date_overlap(start_date,end_date).time_exact_or_overlap(start_time,end_time).any?
       errors[:base] << "student not available"
     end
   end
 
   def no_private_session_conflict_for_trainer
-    if @trainer.appointments.date_overlap(start_date,end_date).time_exact_or_overlap(start_time,end_time).any?
+    if @trainer && @trainer.appointments.date_overlap(start_date,end_date).time_exact_or_overlap(start_time,end_time).any?
       errors[:base] << "instructor not available"
     end
   end
 
   def exact_match_for_group_session
-    appointments = @trainer.appointments.date_overlap(start_date,end_date).time_exact_or_overlap(start_time,end_time)
-    if appointments.any? && appointments.time_exact(start_time,end_time).empty?
-      errors[:base] << "instructor not available"
+    if @trainer
+      appointments = @trainer.appointments.date_overlap(start_date,end_date).time_exact_or_overlap(start_time,end_time)
+      if appointments.any? && appointments.time_exact(start_time,end_time).empty?
+        errors[:base] << "instructor not available"
+      end
     end
   end
 
   def session_capacity
-    appointments = @trainer.appointments.date_overlap(start_date,end_date).time_exact(start_time,end_time)
-    constraint = @trainer.constraints.group_lesson.first
-    if constraint && appointments.count >= constraint.max_participants.to_i
-      errors[:base] << "instructor not available"
+    if @trainer
+      appointments = @trainer.appointments.date_overlap(start_date,end_date).time_exact(start_time,end_time)
+      constraint = @trainer.constraints.group_lesson.first
+      if constraint && appointments.count >= constraint.max_participants.to_i
+        errors[:base] << "instructor not available"
+      end
     end
   end
 
